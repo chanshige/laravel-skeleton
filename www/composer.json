@@ -1,0 +1,98 @@
+{
+    "name": "chanshige/laravel-skeleton",
+    "type": "project",
+    "description": "The Laravel Framework.",
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.3|^8.0",
+        "fideloper/proxy": "^4.4",
+        "fruitcake/laravel-cors": "^2.0",
+        "guzzlehttp/guzzle": "^7.0.1",
+        "koriym/http-constants": "^1.1",
+        "laravel/framework": "^8.12",
+        "laravel/tinker": "^2.5",
+        "ytake/laravel-aspect": "^7.0"
+    },
+    "require-dev": {
+        "chanshige/laravel-query-logger": "^2.0",
+        "doctrine/coding-standard": "^8.2",
+        "facade/ignition": "^2.5",
+        "fakerphp/faker": "^1.9.1",
+        "laravel/sail": "^1.0.1",
+        "mockery/mockery": "^1.4.2",
+        "nunomaduro/collision": "^5.0",
+        "nunomaduro/larastan": "^0.6.13",
+        "phpmd/phpmd": "^2.9",
+        "phpunit/phpunit": "^9.3.3",
+        "squizlabs/php_codesniffer": "^3.5"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "test": [
+            "phpunit"
+        ],
+        "tests": [
+            "phpcs --standard=phpcs.xml app;",
+            "phpmd app text ./phpmd.xml --exclude */Kernel.php",
+            "phpstan analyse -c phpstan.neon --memory-limit=512M",
+            "@test"
+        ],
+        "skeleton:init": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@app:init"
+        ],
+        "app:init": [
+            "@php artisan env --ansi",
+            "@php artisan key:generate --ansi",
+            "@app:compile"
+        ],
+        "app:compile": [
+            "@app:clear",
+            "@app:scan",
+            "@php artisan ytake:aspect-compile --ansi"
+        ],
+        "app:scan": [
+            "@php artisan route:scan --ansi",
+            "@php artisan event:scan --ansi"
+        ],
+        "app:cache": [
+            "@php artisan optimize --ansi"
+        ],
+        "app:clear": [
+            "@php artisan optimize:clear --ansi",
+            "@php artisan clear-compiled --ansi",
+            "@php artisan ytake:aspect-clear-cache --ansi"
+        ]
+    }
+}

@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  nginx:
+    container_name: laravel-skeleton_nginx
+    build: ./docker/nginx
+    ports:
+      - 85:80
+    volumes:
+      - ./www/public:/var/www/public
+      - ./www/storage/app:/var/www/public/storage
+    depends_on:
+      - php
+    environment:
+      TZ: Asia/Tokyo
+
+  php:
+    container_name: laravel-skeleton_php
+    build: ./docker/php
+    volumes:
+      - ./www:/var/www
+    links:
+      - database
+    environment:
+      TZ: Asia/Tokyo
+
+  database:
+    container_name: laravel-skeleton_mysql
+    build: ./docker/db
+    volumes:
+      - db_volume:/var/lib/mysql
+    ports:
+      - 3305:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: secret
+
+  tbls:
+    container_name: laravel-skeleton_dbdoc
+    image: k1low/tbls:latest
+    volumes:
+      - ./:/work
+    command: doc mysql://laravel_user:secret@laravel-skeleton_mysql:3303/laravel ./doc/schema --force
+
+volumes:
+  db_volume:
+    driver: local
